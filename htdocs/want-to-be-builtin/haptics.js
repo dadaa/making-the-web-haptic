@@ -28,7 +28,8 @@ var HapticsController = {
   enable: function(target) {
     target.addEventListener("mousemove", function(e) {
       if (!HapticsController.currentSource) {
-        var source = e.target.style.MozHaptics;
+        var currentTarget = e.target;
+        var source = currentTarget.style.MozHaptics ? currentTarget.style.MozHaptics : currentTarget.getAttribute("MozHaptics");
         var context = HapticsController.audioContext;
         var gainControl = HapticsController.gainControl;
         var audioBuffer = HapticsController.audioBuffers[source];
@@ -62,6 +63,7 @@ var HapticsController = {
   
   parse: function(target) {
     var haptics = target.style.MozHaptics;
+    target.setAttribute("MozHaptics", haptics);//for chrome.. なぜか途中からMozHapticsの値が消えてしまう。。
     if (haptics) {
       HapticsController.load(haptics);
       HapticsController.enable(target, haptics);
